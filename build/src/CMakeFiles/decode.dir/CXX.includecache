@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/zsj/SelfFile/SPP_RT/include/BrdcPro.h
+TimeCoor.h
+/home/zsj/SelfFile/SPP_RT/include/TimeCoor.h
+
+/home/zsj/SelfFile/SPP_RT/include/Const.h
+
+/home/zsj/SelfFile/SPP_RT/include/Decode.h
+iostream
+-
+cstring
+-
+string
+-
+stdint.h
+-
+TimeCoor.h
+/home/zsj/SelfFile/SPP_RT/include/TimeCoor.h
+BrdcPro.h
+/home/zsj/SelfFile/SPP_RT/include/BrdcPro.h
+Const.h
+/home/zsj/SelfFile/SPP_RT/include/Const.h
+stdlib.h
+-
+
+/home/zsj/SelfFile/SPP_RT/include/TimeCoor.h
+
+/home/zsj/SelfFile/SPP_RT/src/Decode.cpp
+../include/Decode.h
+/home/zsj/SelfFile/SPP_RT/include/Decode.h
+cmath
+-
+

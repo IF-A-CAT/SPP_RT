@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++11 -pthread -Wall -fPIC -g -g   CMakeFiles/test01.dir/test01.cpp.o  -o ../bin/test01  -L/home/zsj/SelfFile/SPP_RT/lib -Wl,-rpath,/home/zsj/SelfFile/SPP_RT/lib ../lib/libutils.so ../lib/libdecode.so ../lib/libbrdcpro.so ../lib/libtimecoor.so ../lib/libmatrix.so 

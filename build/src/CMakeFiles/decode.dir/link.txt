@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -g  -shared -Wl,-soname,libdecode.so -o ../../lib/libdecode.so CMakeFiles/decode.dir/Decode.cpp.o -Wl,-rpath,/home/zsj/SelfFile/SPP_RT/lib ../../lib/libbrdcpro.so ../../lib/libtimecoor.so ../../lib/libmatrix.so 

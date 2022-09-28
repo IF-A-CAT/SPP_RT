@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/zsj/SelfFile/SPP_RT/include/Matrix.h
+iostream
+-
+
+/home/zsj/SelfFile/SPP_RT/src/Matrix.cpp
+../include/Matrix.h
+/home/zsj/SelfFile/SPP_RT/include/Matrix.h
+iostream
+-
+cmath
+-
+iomanip
+-
+

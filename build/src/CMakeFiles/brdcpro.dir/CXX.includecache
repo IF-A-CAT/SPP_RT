@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/zsj/SelfFile/SPP_RT/include/BrdcPro.h
+TimeCoor.h
+/home/zsj/SelfFile/SPP_RT/include/TimeCoor.h
+
+/home/zsj/SelfFile/SPP_RT/include/Const.h
+
+/home/zsj/SelfFile/SPP_RT/include/Matrix.h
+iostream
+-
+
+/home/zsj/SelfFile/SPP_RT/include/TimeCoor.h
+
+/home/zsj/SelfFile/SPP_RT/src/BrdcPro.cpp
+../include/BrdcPro.h
+/home/zsj/SelfFile/SPP_RT/include/BrdcPro.h
+../include/Const.h
+/home/zsj/SelfFile/SPP_RT/include/Const.h
+cmath
+-
+iostream
+-
+../include/Matrix.h
+/home/zsj/SelfFile/SPP_RT/include/Matrix.h
+cstring
+-
+

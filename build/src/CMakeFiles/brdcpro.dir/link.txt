@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -g  -shared -Wl,-soname,libbrdcpro.so -o ../../lib/libbrdcpro.so CMakeFiles/brdcpro.dir/BrdcPro.cpp.o -Wl,-rpath,/home/zsj/SelfFile/SPP_RT/lib ../../lib/libmatrix.so ../../lib/libtimecoor.so 
