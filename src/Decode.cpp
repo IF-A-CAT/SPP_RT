@@ -245,7 +245,10 @@ void DecodeGPSEph(RawObs& rawobs)
     double sortedData[]={A,e,omega,Omega,i0,M0,delN,OmegaRate,iRate,cuc,cus,
                          crc,crs,cic,cis,toc,tgd,a0,a1,a2};
     if(rawobs.eph[prn-1]!=NULL)
-        delete rawobs.eph[prn-1];
+        if(rawobs.eph[prn-1]->is_update(gt.sec,toc))
+            delete   rawobs.eph[prn-1];
+        else
+            return; 
     rawobs.eph[prn-1]=new EPHGPS();
     rawobs.eph[prn-1]->init(prn,gt,sortedData);
 }
@@ -292,7 +295,10 @@ void DecodeBDSEph(RawObs& rawobs)
     double sortedData[]={sqrtA,e,omega,Omega,i0,M0,delN,OmegaRate,iRate,cuc,cus,
                          crc,crs,cic,cis,toc,tgd1,tgd2,a0,a1,a2};
     if(rawobs.eph[prn+NGLO-1]!=NULL)
-        delete   rawobs.eph[prn+NGLO-1];
+        if(rawobs.eph[prn+NGLO-1]->is_update(gt.sec,toc))
+            delete   rawobs.eph[prn+NGLO-1];
+        else
+            return;       
     rawobs.eph[prn+NGLO-1]=new EPHBDS();
     rawobs.eph[prn+NGLO-1]->init(prn,gt,sortedData);
 }

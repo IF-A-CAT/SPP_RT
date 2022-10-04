@@ -44,7 +44,7 @@ string GetSysByPrn(int prn)
     return sysP;
 }
 
-/// @brief for binary decode
+/// @brief for binary decode :merge single obs  
 /// @param data 
 /// @return 
 stringstream ObsFormat(const GNSSDATA& data)
@@ -99,6 +99,16 @@ void RangeOut(string filename,string outname)
     int i=0;
     std::ofstream fileOut(outname);
     FILE *fp=fopen(filename.c_str(),"rb");
+    fileOut<<"GPS"<<setw(16)<<"C1C"<<setw(16)<<"L1C"<<setw(16)<<"D1C"<<setw(16)<<"S1C"
+           <<setw(16)<<"C1P"<<setw(16)<<"L1P"<<setw(16)<<"D1P"<<setw(16)<<"S1P"
+           <<setw(16)<<"C2C"<<setw(16)<<"L2C"<<setw(16)<<"D2C"<<setw(16)<<"S2C"
+           <<setw(16)<<"C2P"<<setw(16)<<"L2P"<<setw(16)<<"D2P"<<setw(16)<<"S2P"
+           <<setw(16)<<"C1Q"<<setw(16)<<"L1Q"<<setw(16)<<"D1Q"<<setw(16)<<"S1Q\n";
+    fileOut<<"GPS"<<setw(16)<<"C1C"<<setw(16)<<"L1C"<<setw(16)<<"D1C"<<setw(16)<<"S1C"
+           <<setw(16)<<"C1P"<<setw(16)<<"L1P"<<setw(16)<<"D1P"<<setw(16)<<"S1P"
+           <<setw(16)<<"C2C"<<setw(16)<<"L2C"<<setw(16)<<"D2C"<<setw(16)<<"S2C"
+           <<setw(16)<<"C2P"<<setw(16)<<"L2P"<<setw(16)<<"D2P"<<setw(16)<<"S2P"
+           <<setw(16)<<"C1Q"<<setw(16)<<"L1Q"<<setw(16)<<"D1Q"<<setw(16)<<"S1Q\n";       
     while(!feof(fp))
     {
         i++;

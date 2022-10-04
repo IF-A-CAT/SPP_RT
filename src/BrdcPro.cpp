@@ -294,6 +294,12 @@ void EPHBDS::init(int prn,const GPSTIME& gt,const double* paras)
     memcpy(_clkParas,paras+18,sizeof(double)*3);
 }
 
+bool EPH::is_update(double Toe,double Toc)
+{
+    if(fabs(Toe-GT.sec)<1e-5&&fabs(Toc-_toc)<1e-5) return false;
+    else                                           return true;
+}
+
 
 void EPHBDS::plane_pos(const GPSTIME& gt,double* xy)          //two dimen
 {

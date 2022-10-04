@@ -14,6 +14,7 @@ class EPH
     virtual void rectangular_pos(const GPSTIME& gt,double* xyz){ return;};
     virtual void clock_bias(const GPSTIME& gt,double* bias){return;};
     virtual void rectangular_vel(const GPSTIME&gt,double* xyz_v){return ;};
+    bool is_update(double Toe,double Toc);
     protected:
     virtual void plane_pos(const GPSTIME& gt,double* xy){return ;};
     //***************** base information**********************
