@@ -32,4 +32,4 @@ enum FREQ{L1=0,L2,L3,L4,L5};//for bds L1/2/3/4/5  B1 B2 B3 B1C B2a
 
 enum SIGNALTYPE{C1ENTRY=0,P1ENTRY,C2ENTRY,P2ENTRY,Q5ENTRY};
 
-enum   {NGPS=32,NGAL=NGPS+28,NGLO=NGAL+26,NBDS=NGLO+49};             //the count of satellite
+enum   {NGPS=32,NGAL=NGPS+28,NGLO=NGAL+26,NBDS=NGLO+61};             //the count of satellite

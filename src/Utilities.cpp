@@ -75,18 +75,20 @@ stringstream ObsFormat(const GNSSDATA& data)
         formatStr<<setw(4)<<GetSysByPrn(Sorted.satellites[i]);
         for(j=0;j<5;j++)
         {
-            if(Sorted.measType[i][j]!=99)
+            for(int k=0;k<5;k++)
             {
-                formatStr<<setw(16)<<fixed<<setprecision(3)<<Sorted.measData[i][Sorted.measType[i][j]*4]<<
-                         setw(16)<<fixed<<setprecision(3)<<Sorted.measData[i][Sorted.measType[i][j]*4+1]<<
-                         setw(16)<<fixed<<setprecision(3)<<Sorted.measData[i][Sorted.measType[i][j]*4+2]<<
-                         setw(16)<<fixed<<setprecision(3)<<Sorted.measData[i][Sorted.measType[i][j]*4+3];
+                if(Sorted.measType[i][k]==j)
+                {
+                    formatStr<<setw(16)<<fixed<<setprecision(3)<<Sorted.measData[i][Sorted.measType[i][k]*4]<<
+                             setw(16)<<fixed<<setprecision(3)<<Sorted.measData[i][Sorted.measType[i][k]*4+1]<<
+                             setw(16)<<fixed<<setprecision(3)<<Sorted.measData[i][Sorted.measType[i][k]*4+2]<<
+                             setw(16)<<fixed<<setprecision(3)<<Sorted.measData[i][Sorted.measType[i][k]*4+3];
+                    break;
+                }
             }
-            else
-            {
-                formatStr<<setfill(' ')<<setw(16)<<setfill(' ')<<setw(16)
-                        <<setfill(' ')<<setw(16)<<setfill(' ')<<setw(16);
-            }
+            formatStr<<setfill(' ')<<setw(16)<<setfill(' ')<<setw(16)
+                    <<setfill(' ')<<setw(16)<<setfill(' ')<<setw(16);
+            
         }
         formatStr<<"\n";
     }
@@ -103,12 +105,7 @@ void RangeOut(string filename,string outname)
            <<setw(16)<<"C1P"<<setw(16)<<"L1P"<<setw(16)<<"D1P"<<setw(16)<<"S1P"
            <<setw(16)<<"C2C"<<setw(16)<<"L2C"<<setw(16)<<"D2C"<<setw(16)<<"S2C"
            <<setw(16)<<"C2P"<<setw(16)<<"L2P"<<setw(16)<<"D2P"<<setw(16)<<"S2P"
-           <<setw(16)<<"C1Q"<<setw(16)<<"L1Q"<<setw(16)<<"D1Q"<<setw(16)<<"S1Q\n";
-    fileOut<<"GPS"<<setw(16)<<"C1C"<<setw(16)<<"L1C"<<setw(16)<<"D1C"<<setw(16)<<"S1C"
-           <<setw(16)<<"C1P"<<setw(16)<<"L1P"<<setw(16)<<"D1P"<<setw(16)<<"S1P"
-           <<setw(16)<<"C2C"<<setw(16)<<"L2C"<<setw(16)<<"D2C"<<setw(16)<<"S2C"
-           <<setw(16)<<"C2P"<<setw(16)<<"L2P"<<setw(16)<<"D2P"<<setw(16)<<"S2P"
-           <<setw(16)<<"C1Q"<<setw(16)<<"L1Q"<<setw(16)<<"D1Q"<<setw(16)<<"S1Q\n";       
+           <<setw(16)<<"C1Q"<<setw(16)<<"L1Q"<<setw(16)<<"D1Q"<<setw(16)<<"S1Q\n";   
     while(!feof(fp))
     {
         i++;
@@ -116,4 +113,15 @@ void RangeOut(string filename,string outname)
             fileOut<<ObsFormat(obs.obsData).str();
     }
     fileOut.close();
+}
+
+
+/// @brief convert gpst to bdst
+/// @param gt 
+/// @return bdsT
+GPSTIME GPST2BDST(const GPSTIME& gt)
+{
+    GPSTIME bds;
+    bds.week=gt.week-1356;
+    bds.sec=gt.sec-14.0;
 }

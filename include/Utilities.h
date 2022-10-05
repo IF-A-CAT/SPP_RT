@@ -34,3 +34,5 @@ stringstream ObsFormat(const GNSSDATA& data);
 
 void RangeOut(string filename,string outname);
 
+GPSTIME GPST2BDST(const GPSTIME& gt);
+

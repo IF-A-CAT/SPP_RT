@@ -3,7 +3,11 @@
 
 Srif::Srif():_isInit(false),_epoch(0){}
 
-void  Srif::init(Matrix designMat,Matrix omc,Matrix weight)
+/// @brief init the square root information filter
+/// @param designMat designed matrix (coef matrix)
+/// @param omc      observed minus calculated
+/// @param weight   
+void  Srif::init(Matrix designMat,Matrix omc,Matrix weight,int*paratyoe)
 {
     _AMat=Cholesky(weight)* designMat;
     _omc=Cholesky(weight)*omc;
@@ -17,6 +21,13 @@ void  Srif::init(Matrix designMat,Matrix omc,Matrix weight)
     }
 }
 
+void   Srif::time_update(Matrix stateTranMat,Matrix noise)
+{
+    _x=stateTranMat*_x;
+    (Inv_LU(Trans(_infoMat)*_infoMat)+noise);
+}
+
+/// @brief solve the srif 
 void Srif::sovle()
 {
     Matrix Q,R;
@@ -33,6 +44,10 @@ void Srif::sovle()
     }
 }
 
+/// @brief measurement update
+/// @param coef  coef of the paras
+/// @param omc  
+/// @param sigma sigma 
 void  Srif:: meas_update(double * coef,double omc,double sigma)
 {
     int ncol=_x.get_row();

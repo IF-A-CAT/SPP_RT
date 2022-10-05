@@ -33,7 +33,7 @@ bool ReadMessage(FILE* fp,RawObs& rawobs)
     }
     if(Crc32Check(rawobs.buffer,rawobs.len+rawobs.headerL)) 
         if(DecodeOme4(rawobs))
-            return true;
+            return true;                                //only when decode Range data return true;
     return false;
 }
 
@@ -58,8 +58,8 @@ bool DecodeOme4(RawObs& rawobs)
     switch (rawobs.messID)
     {
         case ID_RANGE:      DecodeRange(rawobs); break;
-        case ID_EPHGPS:     DecodeGPSEph(rawobs);break; 
-        case ID_EPHBDS:     DecodeBDSEph(rawobs);break;
+        case ID_EPHGPS:     DecodeGPSEph(rawobs);return false; 
+        case ID_EPHBDS:     DecodeBDSEph(rawobs);return false;
         default:
         return false;
     }
@@ -94,15 +94,25 @@ void DecodeRange(RawObs& rawobs)
         rawobs.obsData.measType[rawobs.obsData.obsCount][0]=sign;
         switch(sys)
         {
-            case GPS:   
-                rawobs.obsData.satellites[rawobs.obsData.obsCount]=prn;
-                memcpy(rawobs.obsData.measData[rawobs.obsData.obsCount]+sign*4,mainObs,32);
-                break;
-            case BDS:
+            case GPS:                                       //only two type
+                if(sign==C1ENTRY||sign==P2ENTRY)
+                {
+                    rawobs.obsData.satellites[rawobs.obsData.obsCount]=prn;
+                    memcpy(rawobs.obsData.measData[rawobs.obsData.obsCount]+sign*4,mainObs,32);
+                    break;
+                }
+                else
+                    continue;
+            case BDS:                                       //only two type
                 prn+=NGLO;
-                rawobs.obsData.satellites[rawobs.obsData.obsCount]=prn;   
-                memcpy(rawobs.obsData.measData[rawobs.obsData.obsCount]+sign*4,mainObs,32);
-                break;
+                if(sign==C1ENTRY||sign==C2ENTRY)
+                {
+                    rawobs.obsData.satellites[rawobs.obsData.obsCount]=prn;   
+                    memcpy(rawobs.obsData.measData[rawobs.obsData.obsCount]+sign*4,mainObs,32);
+                    break;
+                }
+                else
+                    continue;
             case GLONASS:
                 continue;
                 prn+=NGAL;

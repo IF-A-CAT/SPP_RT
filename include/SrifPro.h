@@ -15,7 +15,7 @@ class Srif
      * init Srif
      * design mat + observation minus calculated + covariance mat
      * ************************/
-    void   init(Matrix designMat,Matrix omc,Matrix weight);
+    void   init(Matrix designMat,Matrix omc,Matrix weight,int*paraKind);
 
     /**************************
      * time update of state 
@@ -46,7 +46,7 @@ class Srif
     private:
     int    _epoch;                                                                                  //epoch of one solved
     bool   _isInit;
-
+    int*   _paraType;
 
     Matrix _x;                                                                                      //parameters to be estimated
     Matrix _AMat;                                                                                   //design matrix
