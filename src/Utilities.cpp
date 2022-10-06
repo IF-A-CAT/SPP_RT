@@ -124,4 +124,5 @@ GPSTIME GPST2BDST(const GPSTIME& gt)
     GPSTIME bds;
     bds.week=gt.week-1356;
     bds.sec=gt.sec-14.0;
+    return bds;
 }

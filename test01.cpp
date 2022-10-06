@@ -12,11 +12,24 @@ int main()
 {
     ifstream binRead;
     // binRead.open("/home/zsj/SelfFile/SPP_RT/data/NovatelOEM20211114-02.log",ios::binary);
+    GPSTIME gt;
+    gt.week=2184;
+    gt.sec=26700;
+    double xyz[3];
     FILE* fp;
-    fp=fopen("/home/zsj/SelfFile/SPP_RT/data/NovatelOEM20211114-02.log","rb");
+    fp=fopen("/home/zsj/SelfFile/SPP_RT/data/NovatelOEM20211114-01.log","rb");
     RawObs      obs;
     int i=0;
-    RangeOut("/home/zsj/SelfFile/SPP_RT/data/NovatelOEM20211114-02.log","out.txt");
+    for(int i=0;i<10000;i++)
+    {
+        ReadMessage(fp,obs);
+        if(obs.eph[15+NGLO]->GT.week!=0)
+        {
+            obs.eph[15+NGLO]->rectangular_pos(GPST2BDST(gt),xyz);
+            obs.eph[15+NGLO]->rectangular_vel(GPST2BDST(gt),xyz);
+            obs.eph[15+NGLO]->clock_bias(GPST2BDST(gt),xyz);
+        }
+    }
     // COMMONTIME ct;
     // JULIANTIME mjd;
     // ct.year=2022;

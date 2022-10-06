@@ -32,7 +32,7 @@ using std::string;
 #define OME4HLEN        28      //the header length(bytes) may changed in the future
 
 #define ID_RANGE        43      // the range measurement
-#define ID_EPHGPS       41      // the ephemeris
+#define ID_EPHGPS       7      // the ephemeris
 #define ID_IONUTC       8       //iono and utc data
 #define ID_EPHBDS       1696    //BDS ephemeris pos
 

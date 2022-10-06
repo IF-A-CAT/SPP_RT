@@ -224,8 +224,12 @@ void DecodeGPSEph(RawObs& rawobs)
         ,ura;
     GPSTIME gt;
     prn=U4(p);      p+=4;
-    tow==R8(p);     p+=8;
+    tow=R8(p);     p+=8;
     health=U4(p);   p+=4;
+    if(health!=0)
+    {
+        return;
+    }
                     p+=8;       //IODE1&IODE2
     gt.week=U4(p);  p+=4;
                     p+=4;       //Z week
@@ -245,6 +249,7 @@ void DecodeGPSEph(RawObs& rawobs)
     iRate=R8(p);    p+=8;
     Omega=R8(p);    p+=8;
     OmegaRate=R8(p);p+=8;
+                    p+=4;
     toc=R8(p);      p+=8;
     tgd=R8(p);      p+=8;
     a0=R8(p);       p+=8;
@@ -275,9 +280,13 @@ void DecodeBDSEph(RawObs& rawobs)
         ,ura,tgd2;
     GPSTIME gt;
     prn=U4(p);      p+=4;
-    gt.week==U4(p); p+=4;
+    gt.week=U4(p); p+=4;
     ura=R8(p);      p+=8;
     health=U4(p);   p+=4;      
+    if(health!=0)
+    {
+        return;
+    }
     tgd1=R8(p);     p+=8;
     tgd2=R8(p);     p+=8;
                     p+=4;       //clock age

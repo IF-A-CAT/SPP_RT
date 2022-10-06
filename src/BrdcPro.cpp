@@ -83,7 +83,7 @@ void EPHGPS::rectangular_pos(const GPSTIME& gt,double* xyz)
     {
         gt_given=gt.sec;
     }
-    deltaT=gt_given-gt.sec;
+    deltaT=gt_given-GT.sec;
     M=_M0+(sqrt(GPS_GM)/pow(_sqrtA,3)+_deltaN)*deltaT;
     EcceAno(M,_e,E);
     TrueAno(_e,E,f);
@@ -127,7 +127,7 @@ void EPHGPS::rectangular_pos(const GPSTIME& gt,XYZ &xyz)
     {
         gt_given=gt.sec;
     }
-    deltaT=gt_given-gt.sec;
+    deltaT=gt_given-GT.sec;
     M=_M0+(sqrt(GPS_GM)/pow(_sqrtA,3)+_deltaN)*deltaT;
     EcceAno(M,_e,E);
     TrueAno(_e,E,f);
@@ -177,7 +177,7 @@ void EPHGPS::clock_bias(const GPSTIME& gt,double* biasDrif)
     EcceAno(M,_e,Ecc);
     corrBias=_clkParas[0]+_clkParas[1]*(deltaToc)+_clkParas[2]*pow(deltaToc,2);           //only clock
     corrBias+=-2*sqrt(GPS_GM)/light_v/light_v*_e*_sqrtA*sin(Ecc);
-    corrBias-=_tgd;
+    // corrBias-=_tgd;
     corrDrift=_clkParas[1]+2*_clkParas[2]*deltaToc;
     corrDrift+=-2*sqrt(GPS_GM)/light_v/light_v*_e*_sqrtA*cos(Ecc)*(_deltaN+sqrt(GPS_GM)/pow(_sqrtA,3))/(1-_e*cos(Ecc));
     biasDrif[0]=corrBias;biasDrif[1]=corrDrift;
@@ -222,21 +222,21 @@ void EPHGPS::rectangular_vel(const GPSTIME&gt,double* xyz_v)
     dI=_deltaI+2*(_Is*cos(2*phi)-_Ic*sin(2*phi))*dPhi;
     dOmega=_deltaOmega-GPS_w;
     Matrix dR(3,4),result,rightMat(4,1);
-    dR(1,1)=cos(Omega);dR(2,1)=sin(Omega);dR(3,1)=0.0;
-    dR(1,2)=-sin(Omega)*cos(i);dR(2,2)=cos(Omega)*cos(i);dR(3,2)=sin(i);
-    dR(1,3)=-(xy[0]*sin(Omega)+xy[1]*cos(Omega)*cos(i));
-    dR(2,3)=(xy[0]*cos(Omega)-xy[1]*sin(Omega)*cos(i));
-    dR(3,3)=0.0;
-    dR(1,4)=xy[1]*sin(Omega)*sin(i);dR(2,4)=xy[1]*cos(Omega)*sin(i);
-    dR(3,4)=xy[1]*cos(i);
-    rightMat(1,1)=dRR*cos(u)-r*dU*sin(u);
-    rightMat(2,1)=dRR*sin(u)+r*dU*cos(u);
-    rightMat(3,1)=dOmega;
-    rightMat(4,1)=dI;
+    dR(0,0)=cos(Omega);dR(1,0)=sin(Omega);dR(2,0)=0.0;
+    dR(0,1)=-sin(Omega)*cos(i);dR(1,1)=cos(Omega)*cos(i);dR(2,1)=sin(i);
+    dR(0,2)=-(xy[0]*sin(Omega)+xy[1]*cos(Omega)*cos(i));
+    dR(1,2)=(xy[0]*cos(Omega)-xy[1]*sin(Omega)*cos(i));
+    dR(2,2)=0.0;
+    dR(0,3)=xy[1]*sin(Omega)*sin(i);dR(1,3)=xy[1]*cos(Omega)*sin(i);
+    dR(2,3)=xy[1]*cos(i);
+    rightMat(0,0)=dRR*cos(u)-r*dU*sin(u);
+    rightMat(1,0)=dRR*sin(u)+r*dU*cos(u);
+    rightMat(2,0)=dOmega;
+    rightMat(3,0)=dI;
     result=dR*rightMat;
-    xyz_v[0]=result(1,1);
-    xyz_v[1]=result(2,1);
-    xyz_v[2]=result(3,1);
+    xyz_v[0]=result(0,0);
+    xyz_v[1]=result(1,0);
+    xyz_v[2]=result(2,0);
 }
 
 
@@ -251,11 +251,11 @@ void EcceAno(double M,double e,double &E)
     E=M;
     while(fabs(deltaE)>1e-12)
     {
-    aux=E;
-    temp=E-e*sin(E)-M;
-    deriv=1-e*cos(E);
-    E=E-temp/deriv;
-    deltaE=aux-E;
+        aux=E;
+        temp=E-e*sin(E)-M;
+        deriv=1-e*cos(E);
+        E=E-temp/deriv;
+        deltaE=aux-E;
     }
 }
 
@@ -266,8 +266,8 @@ void EcceAno(double M,double e,double &E)
 void TrueAno(double e,double E,double &f)
 {
     double temp1,temp2;
-    temp1=cos(E)-e;
-    temp2=sqrt(1-e*e)*sin(E);
+    temp1=(cos(E)-e)/(1-e*cos(E));
+    temp2=sqrt(1-e*e)*sin(E)/(1-e*cos(E));
     f=atan2(temp2,temp1);
 }
 
@@ -371,27 +371,27 @@ void EPHBDS::rectangular_vel(const GPSTIME&gt,double* xyz_v)
     dI=_deltaI+2*(_Is*cos(2*phi)-_Ic*sin(2*phi))*dPhi;
     dOmega=_deltaOmega-BDS_w;
     Matrix dR(3,4),result,rightMat(4,1);
-    dR(1,1)=cos(Omega);dR(2,1)=sin(Omega);dR(3,1)=0.0;
-    dR(1,2)=-sin(Omega)*cos(i);dR(2,2)=cos(Omega)*cos(i);dR(3,2)=sin(i);
-    dR(1,3)=-(xy[0]*sin(Omega)+xy[1]*cos(Omega)*cos(i));
-    dR(2,3)=(xy[0]*cos(Omega)-xy[1]*sin(Omega)*cos(i));
-    dR(3,3)=0.0;
-    dR(1,4)=xy[1]*sin(Omega)*sin(i);dR(2,4)=xy[1]*cos(Omega)*sin(i);
-    dR(3,4)=xy[1]*cos(i);
-    rightMat(1,1)=dRR*cos(u)-r*dU*sin(u);
-    rightMat(2,1)=dRR*sin(u)+r*dU*cos(u);
-    rightMat(3,1)=dOmega;
-    rightMat(4,1)=dI;
+    dR(0,0)=cos(Omega);dR(1,0)=sin(Omega);dR(2,0)=0.0;
+    dR(0,1)=-sin(Omega)*cos(i);dR(1,1)=cos(Omega)*cos(i);dR(2,1)=sin(i);
+    dR(0,2)=-(xy[0]*sin(Omega)+xy[1]*cos(Omega)*cos(i));
+    dR(1,2)=(xy[0]*cos(Omega)-xy[1]*sin(Omega)*cos(i));
+    dR(2,2)=0.0;
+    dR(0,3)=xy[1]*sin(Omega)*sin(i);dR(1,3)=xy[1]*cos(Omega)*sin(i);
+    dR(2,3)=xy[1]*cos(i);
+    rightMat(0,0)=dRR*cos(u)-r*dU*sin(u);
+    rightMat(1,0)=dRR*sin(u)+r*dU*cos(u);
+    rightMat(2,0)=dOmega;
+    rightMat(3,0)=dI;
     result=dR*rightMat;
-    xyz_v[0]=result(1,1);
-    xyz_v[1]=result(2,1);
-    xyz_v[2]=result(3,1);
+    xyz_v[0]=result(0,0);
+    xyz_v[1]=result(1,0);
+    xyz_v[2]=result(2,0);
 }
 
 
 void EPHBDS::clock_bias(const GPSTIME& gt,double* bias)
 {
-    double corrBias,deltaToc,corrDrift,M,Ecc,deltaT,corrBias1,corrBias2;
+    double corrBias,deltaToc,corrDrift,M,Ecc,deltaT;
     if(gt.week-GT.week==1)
     {
         deltaT=86400.0*7+gt.sec-GT.sec;
@@ -411,11 +411,11 @@ void EPHBDS::clock_bias(const GPSTIME& gt,double* bias)
     EcceAno(M,_e,Ecc);
     corrBias=_clkParas[0]+_clkParas[1]*(deltaToc)+_clkParas[2]*pow(deltaToc,2);           //only clock
     corrBias+=-2*sqrt(BDS_GM)/light_v/light_v*_e*_sqrtA*sin(Ecc);
-    corrBias1=corrBias-_tgd;
-    corrBias2=corrBias-_tgd2;
+    // corrBias1=corrBias-_tgd;
+    // corrBias2=corrBias-_tgd2;
     corrDrift=_clkParas[1]+2*_clkParas[2]*deltaToc;
     corrDrift+=-2*sqrt(BDS_GM)/light_v/light_v*_e*_sqrtA*cos(Ecc)*(_deltaN+sqrt(BDS_GM)/pow(_sqrtA,3))/(1-_e*cos(Ecc));
-    bias[0]=corrBias1;bias[1]=corrBias2;
+    bias[0]=corrBias;bias[1]=corrDrift;
 }
 
 void EPHBDS::rectangular_pos(const GPSTIME& gt,XYZ &xyz)
@@ -434,7 +434,7 @@ void EPHBDS::rectangular_pos(const GPSTIME& gt,XYZ &xyz)
     {
         gt_given=gt.sec;
     }
-    deltaT=gt_given-gt.sec;
+    deltaT=gt_given-GT.sec;
     M=_M0+(sqrt(BDS_GM)/pow(_sqrtA,3)+_deltaN)*deltaT;
     EcceAno(M,_e,E);
     TrueAno(_e,E,f);
@@ -475,7 +475,7 @@ void EPHBDS::rectangular_pos(const GPSTIME& gt,double* xyz)
     {
         gt_given=gt.sec;
     }
-    deltaT=gt_given-gt.sec;
+    deltaT=gt_given-GT.sec;
     M=_M0+(sqrt(BDS_GM)/pow(_sqrtA,3)+_deltaN)*deltaT;
     EcceAno(M,_e,E);
     TrueAno(_e,E,f);
