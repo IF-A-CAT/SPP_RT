@@ -4,6 +4,7 @@
  * *******************/
 #pragma once
 #include"TimeCoor.h"
+// #include"Utilities.h"
 /// @brief  the broadcast of GPS satellite and it's process 
 class EPH
 {
@@ -72,3 +73,5 @@ class EPHBDS:public EPH
 void EcceAno(double M,double e,double &E);
 
 void TrueAno(double e,double E,double &f);
+
+bool IsBDSGEOSat(int prn);

@@ -23,11 +23,11 @@ int main()
     for(int i=0;i<10000;i++)
     {
         ReadMessage(fp,obs);
-        if(obs.eph[15+NGLO]->GT.week!=0)
+        if(obs.eph[NGLO+3]->GT.week!=0)
         {
-            obs.eph[15+NGLO]->rectangular_pos(GPST2BDST(gt),xyz);
-            obs.eph[15+NGLO]->rectangular_vel(GPST2BDST(gt),xyz);
-            obs.eph[15+NGLO]->clock_bias(GPST2BDST(gt),xyz);
+            obs.eph[NGLO+3]->rectangular_pos(GPST2BDST(gt),xyz);
+            obs.eph[NGLO+3]->rectangular_vel(GPST2BDST(gt),xyz);
+            obs.eph[NGLO+3]->clock_bias(GPST2BDST(gt),xyz);
         }
     }
     // COMMONTIME ct;

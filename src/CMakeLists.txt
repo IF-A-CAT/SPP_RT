@@ -9,6 +9,6 @@ add_library(utils  SHARED "./Utilities.cpp")
 
 target_link_libraries(decode timecoor brdcpro)
 target_link_libraries(srif matrix)
-target_link_libraries(brdcpro matrix timecoor)
+target_link_libraries(brdcpro matrix timecoor )
 target_link_libraries(utils decode timecoor)
 

@@ -369,23 +369,49 @@ void EPHBDS::rectangular_vel(const GPSTIME&gt,double* xyz_v)
     dU=2*(_Us*cos(2*phi)-_Uc*sin(2*phi))*dPhi+dPhi;
     dRR=pow(_sqrtA,2)*_e*sin(Ecc)*dE+2*(_Rs*cos(2*phi)-_Rc*sin(2*phi))*dPhi;
     dI=_deltaI+2*(_Is*cos(2*phi)-_Ic*sin(2*phi))*dPhi;
-    dOmega=_deltaOmega-BDS_w;
-    Matrix dR(3,4),result,rightMat(4,1);
-    dR(0,0)=cos(Omega);dR(1,0)=sin(Omega);dR(2,0)=0.0;
-    dR(0,1)=-sin(Omega)*cos(i);dR(1,1)=cos(Omega)*cos(i);dR(2,1)=sin(i);
-    dR(0,2)=-(xy[0]*sin(Omega)+xy[1]*cos(Omega)*cos(i));
-    dR(1,2)=(xy[0]*cos(Omega)-xy[1]*sin(Omega)*cos(i));
-    dR(2,2)=0.0;
-    dR(0,3)=xy[1]*sin(Omega)*sin(i);dR(1,3)=xy[1]*cos(Omega)*sin(i);
-    dR(2,3)=xy[1]*cos(i);
-    rightMat(0,0)=dRR*cos(u)-r*dU*sin(u);
-    rightMat(1,0)=dRR*sin(u)+r*dU*cos(u);
-    rightMat(2,0)=dOmega;
-    rightMat(3,0)=dI;
-    result=dR*rightMat;
-    xyz_v[0]=result(0,0);
-    xyz_v[1]=result(1,0);
-    xyz_v[2]=result(2,0);
+    if(!IsBDSGEOSat(Prn))
+    {
+        dOmega=_deltaOmega-BDS_w;
+        Matrix dR(3,4),result,rightMat(4,1);
+        dR(0,0)=cos(Omega);dR(1,0)=sin(Omega);dR(2,0)=0.0;
+        dR(0,1)=-sin(Omega)*cos(i);dR(1,1)=cos(Omega)*cos(i);dR(2,1)=sin(i);
+        dR(0,2)=-(xy[0]*sin(Omega)+xy[1]*cos(Omega)*cos(i));
+        dR(1,2)=(xy[0]*cos(Omega)-xy[1]*sin(Omega)*cos(i));
+        dR(2,2)=0.0;
+        dR(0,3)=xy[1]*sin(Omega)*sin(i);dR(1,3)=xy[1]*cos(Omega)*sin(i);
+        dR(2,3)=xy[1]*cos(i);
+        rightMat(0,0)=dRR*cos(u)-r*dU*sin(u);
+        rightMat(1,0)=dRR*sin(u)+r*dU*cos(u);
+        rightMat(2,0)=dOmega;
+        rightMat(3,0)=dI;
+        result=dR*rightMat;
+        xyz_v[0]=result(0,0);
+        xyz_v[1]=result(1,0);
+        xyz_v[2]=result(2,0);
+    }
+    else
+    {
+        double dx,dy,aux[3];
+        Matrix dXYZ(3,1),velocity,dRz(3,3);
+        dOmega=_deltaOmega;
+        dx=dRR*cos(u)-r*dU*sin(u);
+        dy=dRR*sin(u)+r*dU*cos(u);
+        dXYZ(0,0)=dx*cos(Omega)-dy*sin(Omega)*cos(i)+xy[1]*dI*sin(Omega)*sin(i)
+                    -dOmega*(xy[0]*sin(Omega)+xy[1]*cos(Omega)*cos(i));
+        dXYZ(1,0)=dx*sin(Omega)+dy*cos(Omega)*cos(i)-xy[1]*dI*cos(Omega)*sin(i)
+                    +dOmega*(xy[0]*sin(Omega)-xy[1]*sin(Omega)*cos(i));
+        dXYZ(2,0)=dy*sin(i)+xy[1]*dI*cos(i);
+        dRz(0,0)=-sin(BDS_w*deltaT);dRz(0,1)=cos(BDS_w*deltaT);
+        dRz(1,0)=-cos(BDS_w*deltaT);dRz(1,1)=-sin(BDS_w*deltaT);
+        dRz=BDS_w*dRz;
+        rectangular_pos(gt,aux);
+        Matrix AuxXYZ(aux,3,1);
+        AuxXYZ=Trans(R_z(deltaT*BDS_w)*R_x(-5.0*M_PI/180.0))*AuxXYZ;
+        velocity=R_z(BDS_w*deltaT)*R_x(-5.0/180.0*M_PI)*dXYZ+dRz*R_x(-5.0*M_PI/180.0)*AuxXYZ;
+        xyz_v[0]=velocity(0,0);
+        xyz_v[1]=velocity(1,0);
+        xyz_v[2]=velocity(2,0);
+    }
 }
 
 
@@ -420,7 +446,7 @@ void EPHBDS::clock_bias(const GPSTIME& gt,double* bias)
 
 void EPHBDS::rectangular_pos(const GPSTIME& gt,XYZ &xyz)
 {
-    double M,i,f,L,PosXY[2],u,gt_given,deltaT,E;
+    double M,i,f,L,Omega,PosXY[2],u,gt_given,deltaT,E;
     plane_pos(gt,PosXY);
     if(gt.week-GT.week==1)
     {
@@ -443,16 +469,22 @@ void EPHBDS::rectangular_pos(const GPSTIME& gt,XYZ &xyz)
     L=_Omega+(_deltaOmega-BDS_w) * gt_given -_deltaOmega * GT.sec;
     //transform matrix
     Matrix rotate,Pos(3,1),WGSPos;
-    rotate=R_x(-i);
-    rotate= R_z(-L) * rotate;
-    // std::cout<<rotate;
-    //position of satellite in plane of satellite
-    Pos(0,0)=PosXY[0];
-    Pos(1,0)=PosXY[1];
-    Pos(2,0)=0.0;
-    
-    //WGS-84 location 
-    WGSPos=rotate * Pos;
+    if(IsBDSGEOSat(Prn))
+    {
+        Omega=_Omega+_deltaOmega*deltaT-BDS_w*GT.sec;
+        Pos(0,0)=PosXY[0]*cos(Omega)-PosXY[1]*cos(i)*sin(Omega);
+        Pos(1,0)=PosXY[0]*sin(Omega)+PosXY[1]*cos(i)*cos(Omega);
+        Pos(2,0)=PosXY[1]*sin(i);
+        rotate=R_x(-5.0*M_PI/180.0);
+        rotate=R_z(deltaT*BDS_w)*rotate;
+        WGSPos=rotate*Pos;
+    } 
+    else
+    {
+        rotate=R_x(-i);
+        rotate= R_z(-L) * rotate;
+        WGSPos=rotate * Pos;
+    }
 
     xyz.x=WGSPos(0,0);
     xyz.y=WGSPos(1,0);
@@ -461,7 +493,7 @@ void EPHBDS::rectangular_pos(const GPSTIME& gt,XYZ &xyz)
 
 void EPHBDS::rectangular_pos(const GPSTIME& gt,double* xyz)
 {
-    double M,i,f,L,PosXY[2],u,gt_given,deltaT,E;
+    double M,i,f,Omega,L,PosXY[2],u,gt_given,deltaT,E;
     plane_pos(gt,PosXY);
     if(gt.week-GT.week==1)
     {
@@ -484,18 +516,44 @@ void EPHBDS::rectangular_pos(const GPSTIME& gt,double* xyz)
     L=_Omega+(_deltaOmega-BDS_w) * gt_given -_deltaOmega * GT.sec;
     //transform matrix
     Matrix rotate,Pos(3,1),WGSPos;
-    rotate=R_x(-i);
-    rotate= R_z(-L) * rotate;
-    // std::cout<<rotate;
     //position of satellite in plane of satellite
     Pos(0,0)=PosXY[0];
     Pos(1,0)=PosXY[1];
     Pos(2,0)=0.0;
-    
-    //WGS-84 location 
-    WGSPos=rotate * Pos;
-    // std::cout<<WGSPos;
+    if(IsBDSGEOSat(Prn))
+    {
+        Omega=_Omega+_deltaOmega*deltaT-BDS_w*GT.sec;
+        Pos(0,0)=PosXY[0]*cos(Omega)-PosXY[1]*cos(i)*sin(Omega);
+        Pos(1,0)=PosXY[0]*sin(Omega)+PosXY[1]*cos(i)*cos(Omega);
+        Pos(2,0)=PosXY[1]*sin(i);
+        rotate=R_x(-5.0*M_PI/180.0);
+        rotate=R_z(deltaT*BDS_w)*rotate;
+        WGSPos=rotate*Pos;
+    } 
+    else
+    {
+        rotate=R_x(-i);
+        rotate= R_z(-L) * rotate;
+        WGSPos=rotate * Pos;
+    }
     xyz[0]=WGSPos(0,0);
     xyz[1]=WGSPos(1,0);
     xyz[2]=WGSPos(2,0);
+}
+
+
+/// @brief check if it's GEO satllite or not
+/// @param prn 
+/// @return true or false
+bool IsBDSGEOSat(int prn)
+{
+    if(prn==1||prn==2||prn==3||prn==4||prn==5||prn==59||
+        prn==60||prn==61)
+        {
+            return true;
+        }
+    else
+    {
+        return false;
+    }
 }

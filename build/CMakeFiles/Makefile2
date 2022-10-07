@@ -65,9 +65,9 @@ CMAKE_BINARY_DIR = /home/zsj/SelfFile/SPP_RT/build
 # All Build rule for target.
 CMakeFiles/test01.dir/all: src/CMakeFiles/timecoor.dir/all
 CMakeFiles/test01.dir/all: src/CMakeFiles/decode.dir/all
+CMakeFiles/test01.dir/all: src/CMakeFiles/matrix.dir/all
 CMakeFiles/test01.dir/all: src/CMakeFiles/utils.dir/all
 CMakeFiles/test01.dir/all: src/CMakeFiles/brdcpro.dir/all
-CMakeFiles/test01.dir/all: src/CMakeFiles/matrix.dir/all
 	$(MAKE) -f CMakeFiles/test01.dir/build.make CMakeFiles/test01.dir/depend
 	$(MAKE) -f CMakeFiles/test01.dir/build.make CMakeFiles/test01.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/zsj/SelfFile/SPP_RT/build/CMakeFiles --progress-num=9,10 "Built target test01"
@@ -245,8 +245,8 @@ clean: src/CMakeFiles/srif.dir/clean
 
 # All Build rule for target.
 src/CMakeFiles/decode.dir/all: src/CMakeFiles/timecoor.dir/all
-src/CMakeFiles/decode.dir/all: src/CMakeFiles/brdcpro.dir/all
 src/CMakeFiles/decode.dir/all: src/CMakeFiles/matrix.dir/all
+src/CMakeFiles/decode.dir/all: src/CMakeFiles/brdcpro.dir/all
 	$(MAKE) -f src/CMakeFiles/decode.dir/build.make src/CMakeFiles/decode.dir/depend
 	$(MAKE) -f src/CMakeFiles/decode.dir/build.make src/CMakeFiles/decode.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/zsj/SelfFile/SPP_RT/build/CMakeFiles --progress-num=3,4 "Built target decode"
@@ -322,8 +322,8 @@ clean: src/CMakeFiles/timecoor.dir/clean
 # All Build rule for target.
 src/CMakeFiles/utils.dir/all: src/CMakeFiles/timecoor.dir/all
 src/CMakeFiles/utils.dir/all: src/CMakeFiles/decode.dir/all
-src/CMakeFiles/utils.dir/all: src/CMakeFiles/brdcpro.dir/all
 src/CMakeFiles/utils.dir/all: src/CMakeFiles/matrix.dir/all
+src/CMakeFiles/utils.dir/all: src/CMakeFiles/brdcpro.dir/all
 	$(MAKE) -f src/CMakeFiles/utils.dir/build.make src/CMakeFiles/utils.dir/depend
 	$(MAKE) -f src/CMakeFiles/utils.dir/build.make src/CMakeFiles/utils.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/zsj/SelfFile/SPP_RT/build/CMakeFiles --progress-num=13,14 "Built target utils"
