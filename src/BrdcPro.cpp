@@ -391,6 +391,7 @@ void EPHBDS::rectangular_vel(const GPSTIME&gt,double* xyz_v)
     }
     else
     {
+        Omega=Omega+BDS_w*deltaT;
         double dx,dy,aux[3];
         Matrix dXYZ(3,1),velocity,dRz(3,3);
         dOmega=_deltaOmega;
@@ -399,15 +400,15 @@ void EPHBDS::rectangular_vel(const GPSTIME&gt,double* xyz_v)
         dXYZ(0,0)=dx*cos(Omega)-dy*sin(Omega)*cos(i)+xy[1]*dI*sin(Omega)*sin(i)
                     -dOmega*(xy[0]*sin(Omega)+xy[1]*cos(Omega)*cos(i));
         dXYZ(1,0)=dx*sin(Omega)+dy*cos(Omega)*cos(i)-xy[1]*dI*cos(Omega)*sin(i)
-                    +dOmega*(xy[0]*sin(Omega)-xy[1]*sin(Omega)*cos(i));
+                    +dOmega*(xy[0]*cos(Omega)-xy[1]*sin(Omega)*cos(i));
         dXYZ(2,0)=dy*sin(i)+xy[1]*dI*cos(i);
         dRz(0,0)=-sin(BDS_w*deltaT);dRz(0,1)=cos(BDS_w*deltaT);
         dRz(1,0)=-cos(BDS_w*deltaT);dRz(1,1)=-sin(BDS_w*deltaT);
         dRz=BDS_w*dRz;
         rectangular_pos(gt,aux);
         Matrix AuxXYZ(aux,3,1);
-        AuxXYZ=Trans(R_z(deltaT*BDS_w)*R_x(-5.0*M_PI/180.0))*AuxXYZ;
-        velocity=R_z(BDS_w*deltaT)*R_x(-5.0/180.0*M_PI)*dXYZ+dRz*R_x(-5.0*M_PI/180.0)*AuxXYZ;
+        AuxXYZ=Trans(R_z(deltaT*BDS_w)*R_x(-5.0*pi/180.0))*AuxXYZ;
+        velocity=R_z(BDS_w*deltaT)*R_x(-5.0/180.0*pi)*dXYZ+dRz*R_x(-5.0*pi/180.0)*AuxXYZ;
         xyz_v[0]=velocity(0,0);
         xyz_v[1]=velocity(1,0);
         xyz_v[2]=velocity(2,0);

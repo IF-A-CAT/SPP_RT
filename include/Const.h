@@ -16,7 +16,8 @@
 #define pi                                  3.1415926535898
 #endif
 
-#define pi                                  M_PI
+#define pi                                  3.1415926535898
+// #define M_PI                                3.1415926535898
 #define light_v                             299792458.0             //speed of light
 #define GPS_GM                              3.986005e14
 #define GPS_w                               7.2921151467e-5
